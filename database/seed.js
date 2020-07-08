@@ -28,8 +28,11 @@ for (let i = 1; i <= 100; i++) {
 }
 
 const insertSampleCalendar = function() {
-  Calendar.create(samplePosts)
-    .then(() => db.disconnect());
+  Calendar.deleteMany()
+  .then( ()=> Calendar.create(samplePosts))
+  .then( ()=> console.log("completed db"))
+  .catch( (err) => console.log("error: "+ err))
+
 };
 
 insertSampleCalendar();
