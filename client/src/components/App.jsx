@@ -4,8 +4,10 @@ import Calendar from './Calendar.jsx';
 import Guests from './Guests.jsx';
 import PriceBreakDown from './PriceBreakDown.jsx';
 import styles from '../../dist/style.css';
+import axios from 'axios';
 
 const placeID = Math.ceil(Math.random() * 100);
+const userID = 0;
 
 class App extends React.Component {
   constructor() {
@@ -19,21 +21,28 @@ class App extends React.Component {
       children: 0,
       infants: 0,
       showCalendar: false,
-      showGuestsOptions: false
+      showGuestsOptions: false,
+      user: {},
     }
   }
 
 
   componentDidMount() {
     this.getData();
+    axios.get(`/api/user/${userID}`)
+    .then( data =>{
+      this.setState({
+        user: data
+      })
+    })
   }
 
   getData() {
+    console.log(`placeID: ${placeID}`)
     $.ajax({
-      url: `/api/${placeID}`,
+      url: `/api/place/${placeID}`,
       type: 'GET',
       success: (data) => {
-        console.log(data[0]);
         this.setState({
           info: data[0]
         })
@@ -54,28 +63,43 @@ class App extends React.Component {
         children: this.state.children,
         infants: this.state.infants
       },
+      placeid: this.state.info.id,
       checkin: checkindate.toISOString(),
       checkout: checkoutdate.toISOString()
     }
-
-    $.ajax({
-      url: `/api/${placeID}`,
-      type: 'POST',
-      data: reservation,
-      success: (data) => {
-        this.getData();
-        this.setState({
-          checkIn: 'Add date',
-          checkOut: 'Add date',
-          adults: 1,
-          children: 0,
-          infants: 0
-        })
-      },
-      error: (err) => {
-        console.log('Error patching data');
-      }
+    axios.post(`/api/user/${userID}`, reservation)
+    .then( res => {
+      this.getData();
+      this.setState({
+        checkIn: 'Add date',
+        checkOut: 'Add date',
+        adults: 1,
+        children: 0,
+        infants: 0
+      })
     })
+    .catch( e => console.log("error posting: "+ e))
+
+
+
+    // $.ajax({
+    //   url: `/api/user/${userID}`,
+    //   type: 'POST',
+    //   data: reservation,
+    //   success: (data) => {
+    //     this.getData();
+    //     this.setState({
+    //       checkIn: 'Add date',
+    //       checkOut: 'Add date',
+    //       adults: 1,
+    //       children: 0,
+    //       infants: 0
+    //     })
+    //   },
+    //   error: (err) => {
+    //     console.log('Error patching data');
+    //   }
+    // })
   }
 
   showCalendar() {
@@ -137,6 +161,7 @@ class App extends React.Component {
       [type]: result
     })
   }
+
 
   render() {
 

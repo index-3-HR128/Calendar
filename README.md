@@ -1,14 +1,14 @@
 ## Server API
 
-### Get place info and bookings
-  * GET `/api/:placeID`
+### Get place info
+  * GET `/api/place/:id`
 
 **Path Parameters:**
-  * `placeID` place id
+  * `id` place id
 
 **Success Status Code:** `200`
 
-**Returns:** JSON
+**Returns:** JSON of information of the ID's place
 
 ```json
     {
@@ -20,27 +20,15 @@
         "avg_rating": "Number",
         "reviews": "Number",
         "city": "String",
-        "max_capacity": "Number",
-        "bookings": [
-            {
-                "guests": {
-                    "adults": "Number",
-                    "children": "Number",
-                    "infants": "Number"
-                },
-                "_id": "String",
-                "checkin": "String",
-                "checkout": "String"
-            }
-        ],
+        "max_capacity": "Number"
     }
 ```
 
-### Add bookings
-  * POST `/api/:placeID`
+### Add bookings to user.
+  * POST `/api/user/:id`
 
 **Path Parameters:**
-  * `placeID` place id
+  * `id` user id
 
 **Success Status Code:** `201`
 
@@ -53,45 +41,63 @@
         "children": "Number",
         "infants": "Number"
       },
+      "placeid": "Number",
       "checkin": "string",
       "checkout": "String"
     }
 ```
 
 ### Update booking info
-  * PATCH `/api`
+  * PATCH `/api/user/:userid/booking/:bookingid`
 
 **Path Parameters:**
-  * none
+  * `userid` user id
+  * `bookingid` booking id
 
-**Success Status Code:** `204`
+**Success Status Code:** `202`
 
 **Request Body**: Expects JSON with any of the following keys (include only keys to be updated)
 
 ```json
     {
-      "ticketID": "String",
-      "adults": "String",
-      "children": "String",
-      "infants": "String"
+      "guests": {
+        "adults": "Number",
+        "children": "Number",
+        "infants": "Number"
+      },
+      "placeid": "Number",
+      "checkin": "string",
+      "checkout": "String"
     }
 ```
 
 ### Delete booking info
-  * DELETE `/api/:placeID`
+  * DELETE `/api/user/:userid/booking/:bookingid`
 
 **Path Parameters:**
-  * `id` restaurant id
+  * `userid` user id
+  * `bookingid` booking id
 
-**Success Status Code:** `204`
+**Success Status Code:** `202`
 
-**Request Body**: Expects JSON with any of the following keys (include only keys to be updated)
+### Get user info
+  * GET `/api/user/:id`
+
+**Path Parameters:**
+  * `id` place id
+
+**Success Status Code:** `200`
+
+**Returns:** JSON of information of the ID's place
 
 ```json
     {
-      "ticketID": "String",
+        "id": "Number",
+        "name": "String",
+        "bookings": []
     }
 ```
+
 
 
 
