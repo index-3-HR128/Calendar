@@ -60,7 +60,7 @@ class App extends React.Component {
 
     $.ajax({
       url: `/api/${placeID}`,
-      type: 'PATCH',
+      type: 'POST',
       data: reservation,
       success: (data) => {
         this.getData();

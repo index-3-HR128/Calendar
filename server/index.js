@@ -18,10 +18,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 // get request
 app.get('/api/:placeID', Controller.find);
 // patch request
-app.patch('/api/:placeID', Controller.patch);
-//post request
-app.post('/api', Controller.create);
-//delete request
+app.post('/api/:placeID', Controller.create);
+//post request to create a new place.
+app.patch('/api', Controller.modify);
+//delete request to delete a new place
 app.delete('/api/:placeID',Controller.del);
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));

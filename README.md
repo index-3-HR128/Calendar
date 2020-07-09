@@ -1,39 +1,110 @@
-# Project Name
+## Server API
 
-> Project description
+### Get place info and bookings
+  * GET `/api/:placeID`
 
-## Related Projects
+**Path Parameters:**
+  * `placeID` place id
 
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
+**Success Status Code:** `200`
 
-## Table of Contents
+**Returns:** JSON
 
-1. [Usage](#Usage)
-1. [Requirements](#requirements)
-1. [Development](#development)
-
-## Usage
-
-> Some usage instructions
-
-## Requirements
-
-An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
-
-- Node 6.13.0
-- etc
-
-## Development
-
-### Installing Dependencies
-
-From within the root directory:
-
-```sh
-npm install -g webpack
-npm install
+```json
+    {
+        "_id": "String",
+        "id": "Number",
+        "nightly_fee": "Number",
+        "cleaning_fee": "Number",
+        "occupancy_tax_rate": "Number",
+        "avg_rating": "Number",
+        "reviews": "Number",
+        "city": "String",
+        "max_capacity": "Number",
+        "bookings": [
+            {
+                "guests": {
+                    "adults": "Number",
+                    "children": "Number",
+                    "infants": "Number"
+                },
+                "_id": "String",
+                "checkin": "String",
+                "checkout": "String"
+            }
+        ],
+    }
 ```
+
+### Add bookings
+  * POST `/api/:placeID`
+
+**Path Parameters:**
+  * `placeID` place id
+
+**Success Status Code:** `201`
+
+**Request Body**: Expects JSON with the following keys.
+
+```json
+    {
+      "guests": {
+        "adults": "Number",
+        "children": "Number",
+        "infants": "Number"
+      },
+      "checkin": "string",
+      "checkout": "String"
+    }
+```
+
+### Update booking info
+  * PATCH `/api`
+
+**Path Parameters:**
+  * none
+
+**Success Status Code:** `204`
+
+**Request Body**: Expects JSON with any of the following keys (include only keys to be updated)
+
+```json
+    {
+      "ticketID": "String",
+      "adults": "String",
+      "children": "String",
+      "infants": "String"
+    }
+```
+
+### Delete booking info
+  * DELETE `/api/:placeID`
+
+**Path Parameters:**
+  * `id` restaurant id
+
+**Success Status Code:** `204`
+
+**Request Body**: Expects JSON with any of the following keys (include only keys to be updated)
+
+```json
+    {
+      "ticketID": "String",
+    }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
