@@ -36,14 +36,16 @@
 
 ```json
     {
-      "guests": {
-        "adults": "Number",
-        "children": "Number",
-        "infants": "Number"
-      },
+
+      "adults": "Number",
+      "children": "Number",
+      "infants": "Number",
       "placeid": "Number",
       "checkin": "string",
-      "checkout": "String"
+      "checkout": "String",
+      "nightly_fee": "Number",
+      "cleaning_fee": "Number",
+      "occupance_tax_rate": "Number",
     }
 ```
 
@@ -60,14 +62,15 @@
 
 ```json
     {
-      "guests": {
-        "adults": "Number",
-        "children": "Number",
-        "infants": "Number"
-      },
+      "adults": "Number",
+      "children": "Number",
+      "infants": "Number",
       "placeid": "Number",
       "checkin": "string",
-      "checkout": "String"
+      "checkout": "String",
+      "nightly_fee": "Number",
+      "cleaning_fee": "Number",
+      "occupance_tax_rate": "Number",
     }
 ```
 
