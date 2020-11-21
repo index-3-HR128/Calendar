@@ -1,119 +1,42 @@
-## Server API
+ # FyreBooking
 
-### Get place info
-  * GET `/api/place/:id`
+![](https://media.giphy.com/media/p6GCEH7BRaEbpmozvU/giphy.gif)
 
-**Path Parameters:**
-  * `id` place id
+### Description
 
-**Success Status Code:** `200`
+The calendar and reservations component for a travel accommodations service.
 
-**Returns:** JSON of information of the ID's place
+### Requirements
 
-```json
-    {
-        "_id": "String",
-        "id": "Number",
-        "nightly_fee": "Number",
-        "cleaning_fee": "Number",
-        "occupancy_tax_rate": "Number",
-        "avg_rating": "Number",
-        "reviews": "Number",
-        "city": "String",
-        "max_capacity": "Number"
-    }
+- npm v8.12.x
+- MongoDB v4.2.x
+
+### Installation
+
+1. Install project dependencies
+```sh
+npm install
 ```
 
-### Add bookings to user.
-  * POST `/api/user/:id`
-
-**Path Parameters:**
-  * `id` user id
-
-**Success Status Code:** `201`
-
-**Request Body**: Expects JSON with the following keys.
-
-```json
-    {
-
-      "adults": "Number",
-      "children": "Number",
-      "infants": "Number",
-      "placeid": "Number",
-      "checkin": "string",
-      "checkout": "String",
-      "nightly_fee": "Number",
-      "cleaning_fee": "Number",
-      "occupance_tax_rate": "Number",
-    }
+2. Start up your MongoDB server, then seed the database:
+```sh
+npm run db:setup
 ```
 
-### Update booking info
-  * PATCH `/api/user/:userid/booking/:bookingid`
-
-**Path Parameters:**
-  * `userid` user id
-  * `bookingid` booking id
-
-**Success Status Code:** `202`
-
-**Request Body**: Expects JSON with any of the following keys (include only keys to be updated)
-
-```json
-    {
-      "adults": "Number",
-      "children": "Number",
-      "infants": "Number",
-      "placeid": "Number",
-      "checkin": "string",
-      "checkout": "String",
-      "nightly_fee": "Number",
-      "cleaning_fee": "Number",
-      "occupance_tax_rate": "Number",
-    }
+3. Create a client bundle
+```sh
+npm run webpack-prod
 ```
 
-### Delete booking info
-  * DELETE `/api/user/:userid/booking/:bookingid`
-
-**Path Parameters:**
-  * `userid` user id
-  * `bookingid` booking id
-
-**Success Status Code:** `202`
-
-### Get user info
-  * GET `/api/user/:id`
-
-**Path Parameters:**
-  * `id` place id
-
-**Success Status Code:** `200`
-
-**Returns:** JSON of information of the ID's place
-
-```json
-    {
-        "id": "Number",
-        "name": "String",
-        "bookings": []
-    }
+4. To start the server, run
+```sh
+npm start
 ```
 
+5. To see the fruit of your labors, go to `localhost:3001/calendar/`
 
+### Testing
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```sh
+npm test
+```

@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
-// const mongoUri = 'mongodb://172.17.0.2/calendar';
-// const db = mongoose.connect(mongoUri);
+const mongoUri = 'mongodb://localhost/calendar';
 
-mongoose.connect('mongodb://localhost/calendar', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true  });
-
-const db = mongoose.connection;
-
+const db = mongoose.connect(mongoUri);
 
 module.exports = db;
