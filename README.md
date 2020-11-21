@@ -1,6 +1,6 @@
  # FyreBooking
 
-![](https://i.giphy.com/media/p6GCEH7BRaEbpmozvU/source.gif)
+![](https://media.giphy.com/media/p6GCEH7BRaEbpmozvU/giphy.gif)
 
 ### Description
 
