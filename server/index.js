@@ -1,44 +1,40 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const db = require('../database');
 const path = require('path');
-
-const Calendar = require('../database/Calendar.js');
+const cors = require('cors');
 
 const app = express();
 const port = 3001;
 
-app.use(express.static(__dirname + '/../client/dist'));
+//link to controller:
+const PlaceController = require('./Controller/Place.js');
+const UserController = require('./Controller/User.js');
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.use(cors());
+app.use('/calendar/', express.static(__dirname + '/../client/dist'));
+app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({extended: true}));
 
-// get request
-app.get('/api/:placeID', (req, res) => {
-  const place = req.params.placeID;
+// get places request
+app.get('/api/place/:id', PlaceController.get);
+// // patch request
+// app.post('/api/:placeID', PlaceController.create);
+// //post request to create a new place.
+// app.patch('/api', PlaceController.modify);
+// //delete request to delete a new place
+// app.delete('/api/:placeID',PlaceController.del);
 
-  Calendar.find(place)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      res.send(err);
-    })
-});
+//get user request
+app.get('/api/user/:id', UserController.get);
+//post booking to user
+app.post('/api/user/:id', UserController.createBooking);
+//patch booking info
+app.patch('/api/user/:userid/booking/:bookingid', UserController.modifyBooking);
+//delete booking
+app.delete('/api/user/:userid/booking/:bookingid',
+UserController.deleteBooking)
 
-// patch request
-app.patch('/api/:placeID', (req, res) => {
-  const place = req.params.placeID;
-  const add = req.body;
 
-  Calendar.patch(place, add)
-    .then((data) => {
-      res.send('patch success! (from server)');
-    })
-    .catch((err) => {
-      res.send(err);
-    })
-})
+
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));

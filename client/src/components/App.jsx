@@ -4,88 +4,128 @@ import Calendar from './Calendar.jsx';
 import Guests from './Guests.jsx';
 import PriceBreakDown from './PriceBreakDown.jsx';
 import styles from '../../dist/style.css';
+import axios from 'axios';
+
+const placeID = Math.ceil(Math.random() * 100);
+const userID = 0;
 
 class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      info: {id: 2,
-            nightly_fee: 244,
-            cleaning_fee: 56,
-            service_fee: 63,
-            occupancy_tax_fees: 19,
-            avg_rating: 0.8785097298603173,
-            reviews: 372,
-            city: "Travonmouth",
-            max_capacity: 5,
-            bookings: [
-                  {
-                    guests: {
-                      adults: 2,
-                      children: 1,
-                      infants: 0
-                    },
-                    checkin: "2020-08-08T02:54:27.836Z",
-                    checkout: "2020-08-12T18:15:39.123Z"
-                  }
-              ],
-            },
+      info: {},
       checkIn: 'Add date',
       checkOut: 'Add date',
       adults: 1,
       children: 0,
-      infants: 0
+      infants: 0,
+      showCalendar: false,
+      showGuestsOptions: false,
+      user: {},
     }
-
-    this.calendarElement = React.createRef();
   }
 
-  // componentDidMount() {
-  //   this.getData();
-  // }
 
-  getData(aptID) {
+  componentDidMount() {
+    this.getData();
+    axios.get(`/api/user/${userID}`)
+    .then( data =>{
+      this.setState({
+        user: data
+      })
+    })
+  }
+
+  getData() {
+    console.log(`placeID: ${placeID}`)
     $.ajax({
-      url: `/api/${aptID}`,
+      url: `/api/place/${placeID}`,
       type: 'GET',
       success: (data) => {
-        console.log('success GET, data is: ', data);
+        this.setState({
+          info: data[0]
+        })
       },
       error: (err) => {
-        console.log('ERROR RETRIEVING BLOGS');
+        console.log('Error retrieving data');
       }
     })
   }
 
-  reserve(obj) {
-    $.ajax({
-      url: `/api/${aptID}`,
-      type: 'PATCH',
-      data: JSON.stringify(obj),
-      success: (data) => {
-        console.log('success PATCH, data is: ', data);
+  reserve() {
+    let checkindate = new Date(this.state.checkIn);
+    let checkoutdate = new Date(this.state.checkOut);
+
+    let reservation = {
+      guests: {
+        adults: this.state.adults,
+        children: this.state.children,
+        infants: this.state.infants
       },
-      error: (err) => {
-        console.log('ERROR PATCHING BLOGS');
-      }
+      placeid: this.state.info.id,
+      checkin: checkindate.toISOString(),
+      checkout: checkoutdate.toISOString()
+    }
+    axios.post(`/api/user/${userID}`, reservation)
+    .then( res => {
+      this.getData();
+      this.setState({
+        checkIn: 'Add date',
+        checkOut: 'Add date',
+        adults: 1,
+        children: 0,
+        infants: 0
+      })
+    })
+    .catch( e => console.log("error posting: "+ e))
+
+
+
+    // $.ajax({
+    //   url: `/api/user/${userID}`,
+    //   type: 'POST',
+    //   data: reservation,
+    //   success: (data) => {
+    //     this.getData();
+    //     this.setState({
+    //       checkIn: 'Add date',
+    //       checkOut: 'Add date',
+    //       adults: 1,
+    //       children: 0,
+    //       infants: 0
+    //     })
+    //   },
+    //   error: (err) => {
+    //     console.log('Error patching data');
+    //   }
+    // })
+  }
+
+  showCalendar() {
+    this.setState({
+      showCalendar: !this.state.showCalendar,
+      showGuestsOptions: false
+    })
+  }
+
+  showGuestsOptions() {
+    this.setState({
+      showGuestsOptions: !this.state.showGuestsOptions
     })
   }
 
   handleClick(event) {
     event.preventDefault();
-    this.calendarElement.current.showCalendar();
+    this.setState({
+      showCalendar: true
+    })
   }
-
-  // buttonReserve() {
-  //   this.setState({
-  //     reserve: true
-  //   })
-  // }
 
   updateCheckIn(date) {
     this.setState({
-      checkIn: date
+      checkIn: date,
+      checkOut: 'Add date'
     })
   }
 
@@ -122,6 +162,7 @@ class App extends React.Component {
     })
   }
 
+
   render() {
 
     let button;
@@ -129,24 +170,25 @@ class App extends React.Component {
     let reserve = this.state.checkIn !== 'Add date' && this.state.checkOut !== 'Add date';
 
     if (reserve) {
-      button = <div className={styles.pinkButton}>Reserve</div>
+      button = <div className={styles.pinkButton} onClick={this.reserve.bind(this)}>Reserve</div>
       price = <PriceBreakDown info={this.state.info} calculateNights={this.calculateNights.bind(this)} />
     } else {
       button = <div className={styles.pinkButton} onClick={this.handleClick.bind(this)}>Check availability</div>
       price;
     }
 
+
     return (<div className={styles.calendarForm}>
-      <div className='top-bar'>
+      <div className={styles.topBar}>
       <span> <span className={styles.nightlyFee}>${this.state.info.nightly_fee}</span> / night</span>
       <span className={styles.reviewsRating}> <span className={styles.star}>&#9733;</span> {Math.round(this.state.info.avg_rating * 100)/100} ({this.state.info.reviews})</span>
       </div>
       <form onSubmit={this.reserve.bind(this)}>
         <div className={styles.checkinGuestsContainer}>
 
-      <Calendar calculateNights={this.calculateNights.bind(this)} clearDates={this.clearDates.bind(this)} checkIn={this.state.checkIn} checkOut={this.state.checkOut} updateCheckIn={this.updateCheckIn.bind(this)} updateCheckOut={this.updateCheckOut.bind(this)} ref={this.calendarElement}/>
+      <Calendar showCalendarState={this.state.showCalendar} showCalendar={this.showCalendar.bind(this)} bookings={this.state.info.bookings} calculateNights={this.calculateNights.bind(this)} clearDates={this.clearDates.bind(this)} checkIn={this.state.checkIn} checkOut={this.state.checkOut} updateCheckIn={this.updateCheckIn.bind(this)} updateCheckOut={this.updateCheckOut.bind(this)} ref={this.calendarElement}/>
 
-      <Guests updateGuests={this.updateGuests.bind(this)} adults={this.state.adults} children={this.state.children} infants={this.state.infants} max={this.state.info.max_capacity} />
+      <Guests showGuestsOptions={this.showGuestsOptions.bind(this)} showGuestsState={this.state.showGuestsOptions} updateGuests={this.updateGuests.bind(this)} adults={this.state.adults} children={this.state.children} infants={this.state.infants} max={this.state.info.max_capacity} />
       </div>
       {button}
       </form>
